@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:windowBackground">
+<!--
+android:windowBackground 一般用于activity启动的时候，默认的那个背景图。
+如果你不设置这个属性，那么你的应用启动的时候，会白屏一段时间。
+android:background 就是控件的背景。比如设置textView的背景图-->
+    <ImageView
+        android:id="@+id/bgImageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/bg_place"
+        ></ImageView>
+
+    <FrameLayout
+        android:id="@+id/actionBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorPrimary">
+
+<!--  .9.png  左侧和上方的黑线交叉的部分即可扩展区域
+右侧和下方的黑线交叉的部分即内容显示区域(如做button背景图时，button上文字的显示区域)-->
+        <EditText
+            android:id="@+id/searchPlaceEdit"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:hint="@string/hint1"
+            android:background="@drawable/search_bg"></EditText>
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/actionBarLayout"
+        android:visibility="gone"
+        ></androidx.recyclerview.widget.RecyclerView>
+</RelativeLayout>
