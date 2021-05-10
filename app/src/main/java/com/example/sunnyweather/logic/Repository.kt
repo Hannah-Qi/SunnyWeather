@@ -2,8 +2,11 @@ package com.example.sunnyweather.logic
 
 import androidx.lifecycle.liveData
 import com.example.sunnyweather.logic.model.Place
+import com.example.sunnyweather.logic.model.Weather
 import com.example.sunnyweather.logic.network.SunnyWeatherNetwork
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import java.lang.Exception
 import java.lang.RuntimeException
 
@@ -21,7 +24,7 @@ object Repository {
     fun serachPlaces(query: String) = liveData(Dispatchers.IO) {
         val result = try {
             val placeResponse = SunnyWeatherNetwork.serachPlaces(query) //SunnyWeatherNetwork统一的网络数据源访问入口
-            if(placeResponse.status == "OK"){
+            if(placeResponse.status == "ok"){
                 val places = placeResponse.places
                 Result.success(places)
             }else{
@@ -31,5 +34,34 @@ object Repository {
             Result.failure<List<Place>>(e)
         }
         emit(result)//将包装的结果发射出去，类似于LivaData的setValue()方法来通知数据的变化，这里无法直接返回一个LivaData对象，所以emit是一个替代方法
+    }
+
+    fun refreshWeather(lng: String,lat: String) = liveData {
+        val result = try {
+            coroutineScope {
+                val deferredRealtime = async {
+                    SunnyWeatherNetwork.getRealtimeWeather(lng,lat)
+                }
+                val deferredDaily = async {
+                    SunnyWeatherNetwork.getDailyWeather(lng, lat)
+                }
+                val realtimeResponse = deferredRealtime.await()
+                val dailyResponse = deferredDaily.await()
+                if(realtimeResponse.status == "ok" && dailyResponse.status == "ok"){
+                    val weather = Weather(realtimeResponse.result.realtime,dailyResponse.result.daily)
+                    Result.success(weather)
+                }else{
+                    Result.failure(
+                        RuntimeException(
+                            "realtime response status is ${realtimeResponse.status}"+
+                                    "daily response status is ${dailyResponse.status}"
+                        )
+                    )
+                }
+            }
+        }catch (e: Exception){
+            Result.failure<Weather>(e)
+        }
+        emit(result)
     }
 }

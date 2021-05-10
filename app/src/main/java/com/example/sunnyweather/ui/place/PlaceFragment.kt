@@ -16,7 +16,7 @@ import com.example.sunnyweather.R
 import kotlinx.android.synthetic.main.fragment_place.*
 
 class PlaceFragment : Fragment() {
-    val ViewModel by lazy { ViewModelProviders.of(this).get(PlaceViewModel::class.java) }
+    val viewModel by lazy { ViewModelProviders.of(this).get(PlaceViewModel::class.java) }
 
     private lateinit var adapter: PlaceAdapter
 
@@ -28,37 +28,37 @@ class PlaceFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         val layoutManager = LinearLayoutManager(activity)
         recycleView.layoutManager = layoutManager
-        adapter = PlaceAdapter(this, ViewModel.placeList)
+        adapter = PlaceAdapter(this, viewModel.placeList)
         recycleView.adapter = adapter
+
         searchPlaceEdit.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) {
                 val content = s.toString()
                 if(content.isNotEmpty()){
-                    ViewModel.searchPlaces(content)
+                    viewModel.searchPlaces(content)
                 }else{
                     recycleView.visibility = View.GONE
                     bgImageView.visibility = View.VISIBLE
-                    ViewModel.placeList.clear()
+                    viewModel.placeList.clear()
                     adapter.notifyDataSetChanged()
                 }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                //重点就在TODO，有这个函数，它是要求你必须实现代码块
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
         })
 
-        ViewModel.placeLiveData.observe(this, Observer {
+        viewModel.placeLiveData.observe(this, Observer {
             result -> val places = result.getOrNull()
             if(places != null){
                 recycleView.visibility = View.VISIBLE
                 bgImageView.visibility = View.GONE
-                ViewModel.placeList.clear()
-                ViewModel.placeList.addAll(places)
+                viewModel.placeList.clear()
+                viewModel.placeList.addAll(places)
                 adapter.notifyDataSetChanged()
             }else{
                 Toast.makeText(activity,"未能查询到任何地点",Toast.LENGTH_SHORT).show()
