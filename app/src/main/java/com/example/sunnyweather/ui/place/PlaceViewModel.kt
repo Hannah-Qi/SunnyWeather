@@ -13,6 +13,7 @@ import com.example.sunnyweather.logic.model.Place
 * 并使用switchMap()方法来观察这个对象，否则仓库层返回的LiveData对象将无法进行观察
 * */
 class PlaceViewModel:ViewModel() {
+
     private val serachLiveData = MutableLiveData<String>()
 
     /*
@@ -32,4 +33,10 @@ class PlaceViewModel:ViewModel() {
     fun searchPlaces(query: String){
         serachLiveData.value = query
     }
+
+    fun savePlace(place: Place) = Repository.savePlace(place)
+
+    fun getSavedPlace() = Repository.getsavePlace()
+
+    fun isPlaceSaved() = Repository.isPlaceSaved()
 }

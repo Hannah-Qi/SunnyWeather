@@ -3,6 +3,7 @@ package com.example.sunnyweather.logic
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import com.example.sunnyweather.logic.dao.PlaceDao
 import com.example.sunnyweather.logic.model.Place
 import com.example.sunnyweather.logic.model.Weather
 import com.example.sunnyweather.logic.network.SunnyWeatherNetwork
@@ -19,6 +20,13 @@ import kotlin.coroutines.CoroutineContext
 * 并将获得的数据返回调用方。因此仓库层有点像数据获取与缓存的中间层
 * */
 object Repository {
+
+    fun savePlace(place: Place) = PlaceDao.savePlace(place)
+
+    fun getsavePlace() = PlaceDao.getSavedPlace()
+
+    fun isPlaceSaved() = PlaceDao.isPlaceSaved()
+
     /*
     * 一般在仓库层中定义的方法，为了能将异步获取的数据以响应编程的方式通知给上一层，通常会返回一个LiveData对象
     * 这里使用了lifecycle-livedata-ktx库提供的一个非常强大且好用的功能，可以自动构建并返回一个LiveData对象
